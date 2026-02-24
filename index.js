@@ -8,6 +8,7 @@ let board = [
     [null, null, null],
     [null, null, null]];
 let currentTern = CROSS;
+let ifWins = false;
 
 startGame();
 addResetListener();
@@ -41,35 +42,35 @@ function changeTern(currentTern) {
 
 function checkWinner() {
     const size = board.length;
-    
+
     for (let i = 0; i < size; i++) {
         if (board[i][0] && board[i].every(cell => cell === board[i][0])) {
-            return { winner: board[i][0], cells: [[i, 0], [i, 1], [i, 2]] };
+            return {winner: board[i][0], cells: [[i, 0], [i, 1], [i, 2]]};
         }
         if (board[0][i] && [board[0][i], board[1][i], board[2][i]].every(cell => cell === board[0][i])) {
-            return { winner: board[0][i], cells: [[0, i], [1, i], [2, i]] };
+            return {winner: board[0][i], cells: [[0, i], [1, i], [2, i]]};
         }
     }
-    
+
     if (board[0][0] && [board[0][0], board[1][1], board[2][2]].every(cell => cell === board[0][0])) {
-        return { winner: board[0][0], cells: [[0, 0], [1, 1], [2, 2]] };
+        return {winner: board[0][0], cells: [[0, 0], [1, 1], [2, 2]]};
     }
-    
+
     if (board[0][2] && [board[0][2], board[1][1], board[2][0]].every(cell => cell === board[0][2])) {
-        return { winner: board[0][2], cells: [[0, 2], [1, 1], [2, 0]] };
+        return {winner: board[0][2], cells: [[0, 2], [1, 1], [2, 0]]};
     }
 
     return null;
 }
 
 function cellClickHandler(row, col) {
-    if (board[row][col] !== null) {
+    if (board[row][col] !== null || ifWins) {
         return;
     }
 
     board[row][col] = currentTern;
     renderSymbolInCell(currentTern, row, col);
-    
+
     const winData = checkWinner();
 
     if (winData) {
@@ -77,12 +78,14 @@ function cellClickHandler(row, col) {
             renderSymbolInCell(winData.winner, r, c, 'red');
         }
         setTimeout(() => alert(winData.winner), 50);
+        ifWins = true;
         return;
     }
-    
+
     const hasEmptyCells = board.some(row => row.some(cell => cell === null));
     if (!hasEmptyCells) {
         alert("Победила дружба");
+        ifWins = true;
         return;
     }
 
@@ -108,6 +111,19 @@ function addResetListener() {
 }
 
 function resetClickHandler() {
+    board = [
+        [null, null, null],
+        [null, null, null],
+        [null, null, null]];
+
+    ifWins = false;
+    currentTern = CROSS;
+
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            renderSymbolInCell(null, row, col);
+        }
+    }
     console.log('reset!');
 }
 
