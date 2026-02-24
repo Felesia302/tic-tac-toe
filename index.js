@@ -12,6 +12,32 @@ let ifWins = false;
 
 startGame();
 addResetListener();
+addSizeListener();
+
+function addSizeListener() {
+    const sizeButton = document.getElementById('size');
+    sizeButton.addEventListener('click', resetSizeHandler);
+}
+
+function resetSizeHandler() {
+    const sizeInput = prompt('Введите размер поля', 3);
+    if (sizeInput === null) return;
+
+    const newSize = parseInt(sizeInput);
+    if (isNaN(newSize) || newSize <= 0) return;
+
+    board = [];
+    for (let i = 0; i < newSize; i++) {
+        board[i] = new Array(newSize).fill(null);
+        // renderSymbolInCell(null, row, col);
+    }
+    renderGrid(newSize);
+
+    currentTern = CROSS;
+    ifWins = false;
+
+    console.log('size!');
+}
 
 function startGame() {
     renderGrid(3);
